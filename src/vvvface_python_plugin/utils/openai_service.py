@@ -89,6 +89,8 @@ def analyze_image(image_url: str, language: LanguageEnum = LanguageEnum.ZH) -> s
         messages=messages
     )
     result = completions.choices[0].message.content
+    # 去除结果中的换行符
+    result = result.replace('\n', '').replace('\r', '') if result else result
     logger.info(f"图像分析完成，返回的结果: {result}")
     return result
 
@@ -114,6 +116,8 @@ def text_to_video_prompt(language: LanguageEnum = LanguageEnum.ZH) -> str:
         messages=messages
     )
     result = completions.choices[0].message.content
+    # 去除结果中的换行符
+    result = result.replace('\n', '').replace('\r', '') if result else result
     logger.info(f"文本到视频提示词生成完成，返回的结果: {result}")
     return result
 
@@ -140,6 +144,8 @@ def image_to_video_prompt(image_url: str, language: LanguageEnum = LanguageEnum.
         messages=messages
     )
     result = completions.choices[0].message.content
+    # 去除结果中的换行符
+    result = result.replace('\n', '').replace('\r', '') if result else result
     logger.info(f"图像到视频提示词生成完成，返回的结果: {result}")
     return result
 
@@ -166,5 +172,7 @@ def translate_text(text: str, target_language: LanguageEnum = LanguageEnum.EN) -
         messages=messages
     )
     result = completions.choices[0].message.content
+    # 去除结果中的换行符
+    result = result.replace('\n', '').replace('\r', '') if result else result
     logger.info(f"文本翻译完成，返回的结果: {result}")
     return result

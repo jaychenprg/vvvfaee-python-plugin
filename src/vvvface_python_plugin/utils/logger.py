@@ -50,13 +50,13 @@ def setup_logger(name: str = 'vvvface', log_file: Optional[str] = None, level: i
     file_handler.setFormatter(formatter)
     
     # 创建控制台处理器
-    console_handler = logging.StreamHandler()
-    console_handler.setLevel(level)
-    console_handler.setFormatter(formatter)
+    # console_handler = logging.StreamHandler()
+    # console_handler.setLevel(level)
+    # console_handler.setFormatter(formatter)
     
     # 添加处理器到 logger
     logger.addHandler(file_handler)
-    logger.addHandler(console_handler)
+    # logger.addHandler(console_handler)
     
     return logger
 
