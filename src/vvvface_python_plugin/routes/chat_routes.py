@@ -3,9 +3,9 @@ from copyreg import constructor
 from aiohttp import web
 from pydantic import ValidationError
 
-from ..schemas import AnalyzeImageRequest, ImageToVideoRequest, TextToVideoRequest, TranslateTextRequest
-from ..utils import analyze_image, image_to_video_prompt, text_to_video_prompt, translate_text
 from ..utils.logger import logger
+from ..utils.openai_service import analyze_image, image_to_video_prompt, text_to_video_prompt, translate_text
+from ..schemas import AnalyzeImageRequest, ImageToVideoRequest, TextToVideoRequest, TranslateTextRequest
 
 routes = web.RouteTableDef()
 
@@ -31,8 +31,6 @@ def analyze_image_route(request):
     # 处理请求
     content = analyze_image(params.image_url, params.language)
     logger.info("成功处理 analyze_image 请求")
-
-    # 返回结果
     return web.json_response({
         'message': 'analyze_image',
         'content': content,
@@ -45,7 +43,6 @@ def image_to_video_route(request):
         request_data = dict(request.rel_url.query)
         # 记录请求日志
         logger.info(f"处理 image_to_video 请求: {request_data}")
-
         # 验证参数
         params = ImageToVideoRequest(**request_data)
     except ValidationError as e:
@@ -72,7 +69,6 @@ def text_to_video_route(request):
         request_data = dict(request.rel_url.query)
         # 记录请求日志
         logger.info(f"处理 text_to_video 请求: {request_data}")
-
         # 验证参数
         params = TextToVideoRequest(**request_data)
     except ValidationError as e:
@@ -99,10 +95,8 @@ def translate_text_route(request):
         request_data = dict(request.rel_url.query)
         # 记录请求日志
         logger.info(f"处理 translate_text 请求: {request_data}")
-
         # 验证参数
         params = TranslateTextRequest(**request_data)
-
     except ValidationError as e:
         # 参数验证失败
         error_message = ', '.join([err['msg'] for err in e.errors()])
