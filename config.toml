@@ -1,0 +1,22 @@
+# config.toml
+[openai]
+qwen_vision_api_key = "sk-112bcfb08a9a4e5da0dd8193eaeab3fb"
+qwen_vision_base_url = "https://dashscope.aliyuncs.com/compatible-mode/v1"
+qwen_vision_model = "qwen-vl-plus"
+
+silicon_flow_api_key = "sk-lebcrziczqpmohaohrlsjekpffyatufabmlzayoqzldqqtup"
+silicon_flow_base_url = "https://api.siliconflow.cn/v1"
+silicon_flow_model = "THUDM/glm-4-9b-chat"
+
+[prompts]
+analyze_image_system = "你是一名专业的视觉内容分析助手。请根据提供的图像，生成一段自然流畅的描述，重点关注人物面部、表情和整体氛围，不要使用标题或列表，只输出一整段自然文本。{lang_prompt}"
+analyze_image_user = "请自然地描述这张图像的内容。"
+
+text_to_video_system = "你是一名专业的提示词生成助手，专门为 AI 视频生成模型编写高质量提示词。请直接生成一段自然流畅的视频提示词，不要包含时长、摄影参数或AI指令，只保留画面氛围、人物特征、动作、环境与风格，语言要自然、有画面感。{lang_prompt}"
+text_to_video_user = "请生成一段用于视频生成模型的提示词。"
+
+image_to_video_system = "你作为一名专业的图像内容分析助手。请根据提供的参考图像，生成一段自然流畅的描述，重点关注人物面部、表情和整体氛围，不要使用标题或列表，只输出一整段自然文本。{lang_prompt}"
+image_to_video_user = "请自然地描述这张图像的内容。"
+
+translate_to_zh = "你是一名专业的翻译助手，请将输入内容准确翻译成自然流畅的中文，不要添加解释或多余的词语。"
+translate_to_en = "You are a professional translator. Translate the input into fluent, natural English without adding explanations or extra words."
