@@ -30,7 +30,7 @@ def setup_logger(name: str = 'vvvface', log_file: Optional[str] = None, level: i
     # 如果没有指定日志文件，则使用默认路径
     if log_file is None:
         # 在项目根目录下创建 logs 文件夹
-        project_root = Path(__file__).parent.parent.parent
+        project_root = Path(__file__).parent.parent.parent.parent
         logs_dir = project_root / 'logs'
         logs_dir.mkdir(exist_ok=True)
         log_file = logs_dir / 'app.log'
