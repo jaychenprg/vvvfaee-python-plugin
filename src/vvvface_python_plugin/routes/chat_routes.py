@@ -4,12 +4,12 @@ from aiohttp import web
 from pydantic import ValidationError
 
 from ..schemas import AnalyzeImageRequest, ImageToVideoRequest, TextToVideoRequest, TranslateTextRequest
-from ..utils import analyze_image_prompt, image_to_video_prompt, text_to_video_prompt, translate_text
+from ..utils import analyze_image, image_to_video_prompt, text_to_video_prompt, translate_text
 
 routes = web.RouteTableDef()
 
 @routes.get('/analyze_image')
-def analyze_image(request):
+def analyze_image_route(request):
     try:
         # 获取参数
         request_data = dict(request.rel_url.query)
@@ -24,7 +24,7 @@ def analyze_image(request):
         return web.json_response({'error': str(e)}, status=500)
 
     # 处理请求
-    content = analyze_image_prompt(params.image_url, params.language)
+    content = analyze_image(params.image_url, params.language)
 
     # 返回结果
     return web.json_response({
@@ -33,7 +33,7 @@ def analyze_image(request):
     })
 
 @routes.get('/image_to_video')
-def image_to_video(request):
+def image_to_video_route(request):
     try:
         # 获取参数
         request_data = dict(request.rel_url.query)
@@ -55,7 +55,7 @@ def image_to_video(request):
     })
 
 @routes.get('/text_to_video')
-def text_to_video(request):
+def text_to_video_route(request):
     try:
         # 获取参数
         request_data = dict(request.rel_url.query)
@@ -77,7 +77,7 @@ def text_to_video(request):
     })
 
 @routes.get('/translate_text')
-def translate_text(request):
+def translate_text_route(request):
     try:
         # 获取参数
         request_data = dict(request.rel_url.query)

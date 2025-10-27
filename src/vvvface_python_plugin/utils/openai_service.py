@@ -66,7 +66,7 @@ def _get_lang_prompt(language: LanguageEnum, is_video_prompt: bool = False) -> s
         return '请用中文自然描述。' if language == LanguageEnum.ZH else 'Please describe naturally in English.'
 
 
-def analyze_image_prompt(image_url: str, language: LanguageEnum = LanguageEnum.ZH) -> str:
+def analyze_image(image_url: str, language: LanguageEnum = LanguageEnum.ZH) -> str:
     """
     分析图像并生成自然描述文本
     """

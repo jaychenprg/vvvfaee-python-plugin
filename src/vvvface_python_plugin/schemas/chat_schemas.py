@@ -11,7 +11,7 @@ class AnalyzeImageRequest(BaseModel):
     image_url: str
     language: Optional[LanguageEnum] = LanguageEnum.ZH
 
-    @field_validator("image_url")
+    @field_validator('image_url')
     def validate_image_url(cls, v):
         # 去掉前后空格
         v = v.strip() if isinstance(v, str) else v
@@ -31,7 +31,7 @@ class ImageToVideoRequest(BaseModel):
     image_url: str
     language: Optional[LanguageEnum] = LanguageEnum.ZH
 
-    @field_validator("image_url")
+    @field_validator('image_url')
     def validate_image_url(cls, v):
         # 去掉前后空格
         v = v.strip() if isinstance(v, str) else v
@@ -56,7 +56,7 @@ class TranslateTextRequest(BaseModel):
     text: str
     target_language: Optional[LanguageEnum] = LanguageEnum.EN
 
-    @field_validator("text")
+    @field_validator('text')
     def validate_text(cls, v):
         # 去掉前后空格
         v = v.strip() if isinstance(v, str) else v
