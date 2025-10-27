@@ -5,6 +5,7 @@ from pydantic import ValidationError
 
 from ..schemas import AnalyzeImageRequest, ImageToVideoRequest, TextToVideoRequest, TranslateTextRequest
 from ..utils import analyze_image, image_to_video_prompt, text_to_video_prompt, translate_text
+from ..utils.logger import logger
 
 routes = web.RouteTableDef()
 
@@ -13,18 +14,23 @@ def analyze_image_route(request):
     try:
         # 获取参数
         request_data = dict(request.rel_url.query)
+        # 记录请求日志
+        logger.info(f"处理 analyze_image 请求: {request_data}")
         # 验证参数
         params = AnalyzeImageRequest(**request_data)
     except ValidationError as e:
         # 参数验证失败
         error_message = ', '.join([err['msg'] for err in e.errors()])
+        logger.error(f"参数验证失败: {error_message}")
         return web.json_response({'error': error_message}, status=400)
     except Exception as e:
         # 其他错误
+        logger.error(f"处理 analyze_image 请求时发生未知错误: {str(e)}")
         return web.json_response({'error': str(e)}, status=500)
 
     # 处理请求
     content = analyze_image(params.image_url, params.language)
+    logger.info("成功处理 analyze_image 请求")
 
     # 返回结果
     return web.json_response({
@@ -37,18 +43,23 @@ def image_to_video_route(request):
     try:
         # 获取参数
         request_data = dict(request.rel_url.query)
+        # 记录请求日志
+        logger.info(f"处理 image_to_video 请求: {request_data}")
 
         # 验证参数
         params = ImageToVideoRequest(**request_data)
     except ValidationError as e:
         # 参数验证失败
         error_message = ', '.join([err['msg'] for err in e.errors()])
+        logger.error(f"参数验证失败: {error_message}")
         return web.json_response({'error': error_message}, status=400)
     except Exception as e:
         # 其他错误
+        logger.error(f"处理 image_to_video 请求时发生未知错误: {str(e)}")
         return web.json_response({'error': str(e)}, status=500)
 
     content = image_to_video_prompt(params.image_url, params.language)
+    logger.info("成功处理 image_to_video 请求")
     return web.json_response({
         'message': 'image_to_video',
         'content': content,
@@ -59,18 +70,23 @@ def text_to_video_route(request):
     try:
         # 获取参数
         request_data = dict(request.rel_url.query)
+        # 记录请求日志
+        logger.info(f"处理 text_to_video 请求: {request_data}")
 
         # 验证参数
         params = TextToVideoRequest(**request_data)
     except ValidationError as e:
         # 参数验证失败
         error_message = ', '.join([err['msg'] for err in e.errors()])
+        logger.error(f"参数验证失败: {error_message}")
         return web.json_response({'error': error_message}, status=400)
     except Exception as e:
         # 其他错误
+        logger.error(f"处理 text_to_video 请求时发生未知错误: {str(e)}")
         return web.json_response({'error': str(e)}, status=500)
 
     content = text_to_video_prompt(params.language)
+    logger.info("成功处理 text_to_video 请求")
     return web.json_response({
         'message': 'text_to_video',
         'content': content,
@@ -81,6 +97,8 @@ def translate_text_route(request):
     try:
         # 获取参数
         request_data = dict(request.rel_url.query)
+        # 记录请求日志
+        logger.info(f"处理 translate_text 请求: {request_data}")
 
         # 验证参数
         params = TranslateTextRequest(**request_data)
@@ -88,12 +106,15 @@ def translate_text_route(request):
     except ValidationError as e:
         # 参数验证失败
         error_message = ', '.join([err['msg'] for err in e.errors()])
+        logger.error(f"参数验证失败: {error_message}")
         return web.json_response({'error': error_message}, status=400)
     except Exception as e:
         # 其他错误
+        logger.error(f"处理 translate_text 请求时发生未知错误: {str(e)}")
         return web.json_response({'error': str(e)}, status=500)
 
     content = translate_text(params.text, params.target_language)
+    logger.info("成功处理 translate_text 请求")
     return web.json_response({
         'message': 'translate_text',
         'content': content,

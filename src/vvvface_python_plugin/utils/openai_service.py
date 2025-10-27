@@ -9,6 +9,7 @@ from functools import lru_cache
 
 from ..schemas import LanguageEnum
 from ..utils.config import get_config
+from ..utils.logger import logger
 
 # 获取配置实例
 config = get_config()
@@ -70,6 +71,7 @@ def analyze_image(image_url: str, language: LanguageEnum = LanguageEnum.ZH) -> s
     """
     分析图像并生成自然描述文本
     """
+    logger.info(f"开始分析图像: {image_url}, 语言: {language}")
     prompt_config = config.prompt_config
     lang_prompt = _get_lang_prompt(language)
 
@@ -86,13 +88,16 @@ def analyze_image(image_url: str, language: LanguageEnum = LanguageEnum.ZH) -> s
         model=config.openai_config.get('qwen_vision_model'),
         messages=messages
     )
-    return completions.choices[0].message.content
+    result = completions.choices[0].message.content
+    logger.info(f"图像分析完成，返回的结果: {result}")
+    return result
 
 
 def text_to_video_prompt(language: LanguageEnum = LanguageEnum.ZH) -> str:
     """
     生成适用于通义万相等视频模型的提示词（无参考图像）
     """
+    logger.info(f"开始生成文本到视频提示词，语言: {language}")
     prompt_config = config.prompt_config
     lang_prompt = _get_lang_prompt(language, is_video_prompt=True)
 
@@ -108,13 +113,16 @@ def text_to_video_prompt(language: LanguageEnum = LanguageEnum.ZH) -> str:
         model=config.openai_config.get('silicon_flow_model'),
         messages=messages
     )
-    return completions.choices[0].message.content
+    result = completions.choices[0].message.content
+    logger.info(f"文本到视频提示词生成完成，返回的结果: {result}")
+    return result
 
 
 def image_to_video_prompt(image_url: str, language: LanguageEnum = LanguageEnum.ZH) -> str:
     """
     根据参考图像生成适用于通义万相等视频模型的提示词
     """
+    logger.info(f"开始生成图像到视频提示词，图像URL: {image_url}, 语言: {language}")
     prompt_config = config.prompt_config
     lang_prompt = _get_lang_prompt(language, is_video_prompt=True)
 
@@ -131,13 +139,16 @@ def image_to_video_prompt(image_url: str, language: LanguageEnum = LanguageEnum.
         model=config.openai_config.get('qwen_vision_model'),
         messages=messages
     )
-    return completions.choices[0].message.content
+    result = completions.choices[0].message.content
+    logger.info(f"图像到视频提示词生成完成，返回的结果: {result}")
+    return result
 
 
 def translate_text(text: str, target_language: LanguageEnum = LanguageEnum.EN) -> str:
     """
     翻译文本：中文 <-> 英文
     """
+    logger.info(f"开始翻译文本，目标语言: {target_language}, 文本长度: {len(text)}")
     prompt_config = config.prompt_config
 
     if target_language == LanguageEnum.ZH:
@@ -154,4 +165,6 @@ def translate_text(text: str, target_language: LanguageEnum = LanguageEnum.EN) -
         model=config.openai_config.get('silicon_flow_model'),
         messages=messages
     )
-    return completions.choices[0].message.content
+    result = completions.choices[0].message.content
+    logger.info(f"文本翻译完成，返回的结果: {result}")
+    return result
