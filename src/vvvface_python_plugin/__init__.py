@@ -6,7 +6,7 @@ app = web.Application()
 
 def create_app() -> web.Application:
     app = web.Application()
-    app.add_subapp('/pyapi/third_party_api_request', create_openai_request_app())
+    app.add_subapp('/third_party_api_request', create_openai_request_app())
     return app
 
 def main() -> None:
