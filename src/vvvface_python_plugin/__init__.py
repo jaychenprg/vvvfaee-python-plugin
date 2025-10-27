@@ -11,4 +11,4 @@ def create_app() -> web.Application:
 
 def main() -> None:
     print("Hello from vvvface-python-plugin!")
-    web.run_app(create_app(), host="0.0.0.0", port=5005)
+    web.run_app(create_app(), host="0.0.0.0", port=5000)
