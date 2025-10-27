@@ -4,8 +4,8 @@ from aiohttp import web
 from pydantic import ValidationError
 
 from ..utils.logger import logger
-from ..utils.openai_service import analyze_image, image_to_video_prompt, text_to_video_prompt, translate_text
-from ..schemas import AnalyzeImageRequest, ImageToVideoRequest, TextToVideoRequest, TranslateTextRequest
+from ..utils.openai_service import analyze_image, analyze_image_with_text, image_to_video_prompt, text_to_video_prompt, translate_text
+from ..schemas import AnalyzeImageRequest, AnalyzeImageWithTextRequest, ImageToVideoRequest, TextToVideoRequest, TranslateTextRequest
 
 routes = web.RouteTableDef()
 
@@ -33,6 +33,33 @@ def analyze_image_route(request):
     logger.info("成功处理 analyze_image 请求")
     return web.json_response({
         'message': 'analyze_image',
+        'content': content,
+    })
+
+@routes.get('/analyze_image_with_text')
+def analyze_image_with_text_route(request):
+    try:
+        # 获取参数
+        request_data = dict(request.rel_url.query)
+        # 记录请求日志
+        logger.info(f"处理 analyze_image_with_text 请求: {request_data}")
+        # 验证参数
+        params = AnalyzeImageWithTextRequest(**request_data)
+    except ValidationError as e:
+        # 参数验证失败
+        error_message = ', '.join([err['msg'] for err in e.errors()])
+        logger.error(f"参数验证失败: {error_message}")
+        return web.json_response({'error': error_message}, status=400)
+    except Exception as e:
+        # 其他错误
+        logger.error(f"处理 analyze_image_with_text 请求时发生未知错误: {str(e)}")
+        return web.json_response({'error': str(e)}, status=500)
+
+    # 处理请求
+    content = analyze_image_with_text(params.image_url, params.text, params.language)
+    logger.info("成功处理 analyze_image_with_text 请求")
+    return web.json_response({
+        'message': 'analyze_image_with_text',
         'content': content,
     })
 

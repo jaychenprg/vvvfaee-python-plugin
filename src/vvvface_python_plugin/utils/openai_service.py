@@ -89,9 +89,39 @@ def analyze_image(image_url: str, language: LanguageEnum = LanguageEnum.ZH) -> s
         messages=messages
     )
     result = completions.choices[0].message.content
-    # 去除结果中的换行符
     result = result.replace('\n', '').replace('\r', '') if result else result
     logger.info(f"图像分析完成，返回的结果: {result}")
+    return result
+
+
+def analyze_image_with_text(image_url: str, text: str, language: LanguageEnum = LanguageEnum.ZH) -> str:
+    """
+    分析图像并结合用户文本描述生成融合结果。
+    当图像信息与文本冲突时，以文本信息为主。
+    （仅调用一次模型）
+    """
+    logger.info(f"开始图像+文本融合分析: {image_url}, 语言: {language}, 文本: {text[:50]}...")
+    prompt_config = config.prompt_config
+    lang_prompt = _get_lang_prompt(language)
+
+    image_analysis = analyze_image(image_url, language)
+
+    system_prompt = prompt_config.get('merge_image_text_system', '').format(lang_prompt=lang_prompt)
+    user_prompt = prompt_config.get('merge_image_text_user', '').format(image_analysis=image_analysis, text=text)
+
+    messages = _build_text_message(
+        user_content=user_prompt,
+        system_prompt=system_prompt
+    )
+
+    completions = OpenAIClients.get_silicon_flow_client().chat.completions.create(
+        model=config.openai_config.get('silicon_flow_model'),
+        messages=messages
+    )
+
+    result = completions.choices[0].message.content
+    result = result.replace('\n', '').replace('\r', '') if result else result
+    logger.info(f"图像与文本融合分析完成，返回结果: {result}")
     return result
 
 
@@ -116,7 +146,6 @@ def text_to_video_prompt(language: LanguageEnum = LanguageEnum.ZH) -> str:
         messages=messages
     )
     result = completions.choices[0].message.content
-    # 去除结果中的换行符
     result = result.replace('\n', '').replace('\r', '') if result else result
     logger.info(f"文本到视频提示词生成完成，返回的结果: {result}")
     return result
@@ -144,7 +173,6 @@ def image_to_video_prompt(image_url: str, language: LanguageEnum = LanguageEnum.
         messages=messages
     )
     result = completions.choices[0].message.content
-    # 去除结果中的换行符
     result = result.replace('\n', '').replace('\r', '') if result else result
     logger.info(f"图像到视频提示词生成完成，返回的结果: {result}")
     return result
@@ -172,7 +200,6 @@ def translate_text(text: str, target_language: LanguageEnum = LanguageEnum.EN) -
         messages=messages
     )
     result = completions.choices[0].message.content
-    # 去除结果中的换行符
     result = result.replace('\n', '').replace('\r', '') if result else result
     logger.info(f"文本翻译完成，返回的结果: {result}")
     return result
