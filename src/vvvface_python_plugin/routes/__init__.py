@@ -1,0 +1,1 @@
+from .chat_routes import create_app as create_openai_request_app
