@@ -91,7 +91,7 @@ def image_to_video_route(request):
     content = image_to_video_prompt(params.image_url, params.language)
     logger.info("成功处理 image_to_video 请求")
     return web.json_response({
-        'code:': 0,
+        'code': 0,
         'data': {
             'content': content,
         },
