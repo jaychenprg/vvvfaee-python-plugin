@@ -203,3 +203,31 @@ def translate_text(text: str, target_language: LanguageEnum = LanguageEnum.EN) -
     result = result.replace('\n', '').replace('\r', '') if result else result
     logger.info(f"文本翻译完成，返回的结果: {result}")
     return result
+
+
+def merge_texts(text1: str, text2: str, language: LanguageEnum = LanguageEnum.ZH) -> str:
+    """
+    合并两段文本为一个统一的描述。
+    当两段文本信息有冲突时，以text2为主。
+    """
+    logger.info(f"开始合并文本，语言: {language}")
+    prompt_config = config.prompt_config
+    lang_prompt = _get_lang_prompt(language)
+
+    system_prompt = prompt_config.get('merge_texts_system', '').format(lang_prompt=lang_prompt)
+    user_prompt = prompt_config.get('merge_texts_user', '').format(text1=text1, text2=text2)
+
+    messages = _build_text_message(
+        user_content=user_prompt,
+        system_prompt=system_prompt
+    )
+
+    completions = OpenAIClients.get_silicon_flow_client().chat.completions.create(
+        model=config.openai_config.get('silicon_flow_model'),
+        messages=messages
+    )
+
+    result = completions.choices[0].message.content
+    result = result.replace('\n', '').replace('\r', '') if result else result
+    logger.info(f"文本合并完成，返回结果: {result}")
+    return result

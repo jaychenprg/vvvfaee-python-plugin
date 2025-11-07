@@ -4,8 +4,8 @@ from aiohttp import web
 from pydantic import ValidationError
 
 from ..utils.logger import logger
-from ..utils.openai_service import analyze_image, analyze_image_with_text, image_to_video_prompt, text_to_video_prompt, translate_text
-from ..schemas import AnalyzeImageRequest, AnalyzeImageWithTextRequest, ImageToVideoRequest, TextToVideoRequest, TranslateTextRequest
+from ..utils.openai_service import analyze_image, analyze_image_with_text, image_to_video_prompt, text_to_video_prompt, translate_text, merge_texts
+from ..schemas import AnalyzeImageRequest, AnalyzeImageWithTextRequest, ImageToVideoRequest, TextToVideoRequest, TranslateTextRequest, MergeTextRequest
 
 routes = web.RouteTableDef()
 
@@ -155,6 +155,37 @@ def translate_text_route(request):
         },
         'msg': 'translate_text',
     })
+
+
+@routes.get('/merge_texts')
+def merge_texts_route(request):
+    try:
+        # 获取参数
+        request_data = dict(request.rel_url.query)
+        # 记录请求日志
+        logger.info(f"处理 merge_texts 请求: {request_data}")
+        # 验证参数
+        params = MergeTextRequest(**request_data)
+    except ValidationError as e:
+        # 参数验证失败
+        error_message = ', '.join([err['msg'] for err in e.errors()])
+        logger.error(f"参数验证失败: {error_message}")
+        return web.json_response({'code': -1, 'error': error_message}, status=400)
+    except Exception as e:
+        # 其他错误
+        logger.error(f"处理 merge_texts 请求时发生未知错误: {str(e)}")
+        return web.json_response({'code': -1, 'error': str(e)}, status=500)
+
+    content = merge_texts(params.text1, params.text2, params.language)
+    logger.info("成功处理 merge_texts 请求")
+    return web.json_response({
+        'code': 0,
+        'data': {
+            'content': content,
+        },
+        'msg': 'merge_texts',
+    })
+
 
 def create_app():
     app = web.Application()

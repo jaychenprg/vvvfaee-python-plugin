@@ -98,3 +98,32 @@ class AnalyzeImageWithTextRequest(BaseModel):
             raise ValueError('text is required')
 
         return v
+
+
+class MergeTextRequest(BaseModel):
+    """文本合并接口请求模型"""
+    text1: str
+    text2: str
+    language: Optional[LanguageEnum] = LanguageEnum.ZH
+
+    @field_validator('text1')
+    def validate_text1(cls, v):
+        # 去掉前后空格和换行符
+        v = v.strip() if isinstance(v, str) else v
+
+        # 空字符串检查
+        if not v:
+            raise ValueError('text1 is required')
+
+        return v
+
+    @field_validator('text2')
+    def validate_text2(cls, v):
+        # 去掉前后空格和换行符
+        v = v.strip() if isinstance(v, str) else v
+
+        # 空字符串检查
+        if not v:
+            raise ValueError('text2 is required')
+
+        return v
